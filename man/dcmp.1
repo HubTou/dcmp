@@ -1,0 +1,115 @@
+.Dd February 20, 2022
+.Dt DCMP 1
+.Os
+.Sh NAME
+.Nm dcmp
+.Nd compare two directories, deduplicating if needed
+.Sh SYNOPSIS
+.Nm
+.Op Fl -dedup
+.Op Fl h|--nosymlinks
+.Op Fl s|--silent|--quiet
+.Op Fl v|--verbose
+.Op Fl -debug
+.Op Fl -help|-?
+.Op Fl -version
+.Op Fl -
+.Ar directory1
+.Ar directory2
+.Sh DESCRIPTION
+The
+.Nm
+utility compares two directories contents and writes the results to the standard output.
+By default,
+.Nm
+is silent if the directories are the same; if they differ, the differences are reported with a leading:
+.Bl -tag -width 4n
+.It !
+if files contents are different
+.It +
+if the file or directory appears in directory1 but not in directory2
+.It -
+if the file or directory appears in directory2 but not in directory1
+.It =
+if the files contents are identical and you used the
+.Fl v|--verbose
+option
+.El
+.Pp
+If you use the
+.Fl s|--silent|--quiet
+option, differences won't be reported and the overall result will be returned though the exit status (thus stopping the comparison at the first difference).
+.Pp
+By default,
+.Nm
+follows symlinks to directories, unless you tell it not to do so with the
+.Fl h|--nosymlinks
+option, or you use the
+.Fl -dedup
+option for deduplicating the
+.Em first
+directory, removing identical files and empty directories sitting there.
+.Ss OPTIONS
+The following options are available:
+.Pp
+.Op Fl -dedup
+In dir1, remove empty dirs and files which are identical to those in dir2
+.Pp
+.Op Fl h|--nosymlinks
+Do not follow symlinks
+.Pp
+.Op Fl s|--silent|--quiet
+Print nothing for differing dirs; return exit status only
+.Pp
+.Op Fl v|--verbose
+Print identical dirs and files names
+.Pp
+.Op Fl -debug
+Enable debug mode
+.Pp
+.Op Fl -help|-?
+Print usage and this help message and exit
+.Pp
+.Op Fl -version
+Print version and exit
+.Pp
+.Op Fl -
+Options processing terminator
+.Sh ENVIRONMENT
+The
+.Ev DCMP_DEBUG
+environment variable can also be set to any value to enable debug mode.
+.Sh EXIT STATUS
+The
+.Nm
+utility exits with one of the following values:
+.Bl -tag -width 4n
+.It 0
+The directories are identical
+.It 1
+The directories are different
+.It >1
+An error occurred
+.El
+.Sh SEE ALSO
+.Xr cmp 1 ,
+.Xr sha256 1
+.Sh STANDARDS
+The
+.Nm
+utility is not a standard UNIX command.
+.Pp
+This implementation tries to follow the PEP 8 style guide for Python code.
+.Sh PORTABILITY
+To be tested under Windows.
+.Sh HISTORY
+This implementation was made for the
+.Lk https://github.com/HubTou/PNU PNU project
+.Pp
+The
+.Nm
+utility was made to help spot potential differences between restored backups and current files and directories.
+.Sh LICENSE
+It is available under the 3-clause BSD license.
+.Sh AUTHORS
+.An Hubert Tournier

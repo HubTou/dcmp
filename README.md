@@ -78,3 +78,4 @@ It is available under the [3-clause BSD license](https://opensource.org/licenses
 
 ## AUTHORS
 [Hubert Tournier](https://github.com/HubTou)
+
