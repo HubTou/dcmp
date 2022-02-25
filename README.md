@@ -1,5 +1,11 @@
 # Installation
+Depending on if you want only this tool, the full set of PNU tools, or PNU plus a selection of additional third-parties tools, use one of these commands:
+
 pip install [pnu-dcmp](https://pypi.org/project/pnu-dcmp/)
+<br>
+pip install [PNU](https://pypi.org/project/PNU/)
+<br>
+pip install [pytnix](https://pypi.org/project/pytnix/)
 
 # DCMP(1)
 
@@ -20,7 +26,7 @@ directory1 directory2
 
 ## DESCRIPTION
 The **dcmp** utility compares two directories contents and writes the results to the standard output.
-By default, dcmp is silent if the directories are the same;
+By default, **dcmp** is silent if the directories are the same;
 if they differ, the differences are reported with a leading:
 * '!' if files contents are different
 * '+' if the file or directory appears in directory1 but not in directory2
@@ -30,8 +36,9 @@ if they differ, the differences are reported with a leading:
 If you use the *-s|--silent|--quiet* option, differences won't be reported and the overall result will be returned though the exit status
 (thus stopping the comparison at the first difference).
 
-By default, dcmp follows symlinks to directories, unless you tell it not to do so with the *-h|--nosymlinks* option,
-or you use the *--dedup* option for deduplicating the first directory, removing identical files and empty directories sitting there.
+By default, **dcmp** follows symbolic links to directories, unless you tell it not to do so with the *-h|--nosymlinks* option,
+or you use the *--dedup* option for deduplicating the first directory, removing identical files
+(ie. those having the same [SHA-256 message digest](https://en.wikipedia.org/wiki/SHA-2)) and symbolic links, as well as empty directories sitting there.
 
 ### OPTIONS
 The following options are available:
@@ -39,7 +46,7 @@ The following options are available:
 Options | Use
 ------- | ---
 --dedup|In dir1, remove empty dirs and files which are identical to those in dir2
--h\|--nosymlinks|Do not follow symlinks
+-h\|--nosymlinks|Do not follow symbolic links
 -s\|--silent\|--quiet|Print nothing for differing dirs; return exit status only
 -v\|--verbose|Print identical dirs and files names
 --debug|Enable debug mode

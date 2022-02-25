@@ -13,7 +13,7 @@ import signal
 import sys
 
 # Version string used by the what(1) and ident(1) commands:
-ID = "@(#) $Id: dcmp - compare two directories, deduplicating if needed v1.0.0 (February 20, 2022) by Hubert Tournier $"
+ID = "@(#) $Id: dcmp - compare two directories, deduplicating if needed v1.0.1 (February 25, 2022) by Hubert Tournier $"
 
 BLOCK = 1048576
 
@@ -125,7 +125,7 @@ def _process_command_line():
 
         if option == "--dedup":
             parameters["Dedup mode"] = True
-            # caution:
+            # Let's be cautious against symlink attacks:
             parameters["Follow symlinks"] = False
 
         elif option in ("-h", "--nosymlinks"):
@@ -234,27 +234,46 @@ def main():
                     exit_status = DIFFERENCES
 
         for file in files1:
+            file1 = root1 + os.sep + file
             if file in files2:
-                if _hash_file(root1 + os.sep + file) == _hash_file(root2 + os.sep + file):
+                file2 = root2 + os.sep + file
+
+                if os.path.islink(file1):
+                    if os.path.islink(file2) and os.path.readlink(file1) == os.path.readlink(file2):
+                        if parameters["Verbose mode"]:
+                            print(IDENTICAL + " " + file1)
+                        if parameters["Dedup mode"]:
+                            try:
+                                os.remove(file1)
+                                logging.info("Removed symlink: %s", file1)
+                            except:
+                                logging.error("Failed removing symlink: %s", file1)
+                    else:
+                        if parameters["Silent mode"]:
+                            sys.exit(DIFFERENCES)
+                        else:
+                            print(DIFFERENT + " " + file1)
+                            exit_status = DIFFERENCES
+                elif _hash_file(file1) == _hash_file(file2):
                     if parameters["Verbose mode"]:
-                        print(IDENTICAL + " " + root1 + os.sep + file)
+                        print(IDENTICAL + " " + file1)
                     if parameters["Dedup mode"]:
                         try:
-                            os.remove(root1 + os.sep + file)
-                            logging.info("Removed file: %s", root1 + os.sep + file)
+                            os.remove(file1)
+                            logging.info("Removed file: %s", file1)
                         except:
-                            logging.error("Failed removing file: %s", root1 + os.sep + file)
+                            logging.error("Failed removing file: %s", file1)
                 else:
                     if parameters["Silent mode"]:
                         sys.exit(DIFFERENCES)
                     else:
-                        print(DIFFERENT + " " + root1 + os.sep + file)
+                        print(DIFFERENT + " " + file1)
                         exit_status = DIFFERENCES
             else:
                 if parameters["Silent mode"]:
                     sys.exit(DIFFERENCES)
                 else:
-                    print(MISSING_IN_DIR2 + " " + root1 + os.sep + file)
+                    print(MISSING_IN_DIR2 + " " + file1)
                     exit_status = DIFFERENCES
 
         for file in files2:

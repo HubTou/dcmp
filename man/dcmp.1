@@ -1,4 +1,4 @@
-.Dd February 20, 2022
+.Dd February 25, 2022
 .Dt DCMP 1
 .Os
 .Sh NAME
@@ -42,13 +42,13 @@ option, differences won't be reported and the overall result will be returned th
 .Pp
 By default,
 .Nm
-follows symlinks to directories, unless you tell it not to do so with the
+follows symbolic links to directories, unless you tell it not to do so with the
 .Fl h|--nosymlinks
 option, or you use the
 .Fl -dedup
 option for deduplicating the
 .Em first
-directory, removing identical files and empty directories sitting there.
+directory, removing identical files (ie. those having the same SHA-256 message digest) and symbolic links, as well as empty directories sitting there.
 .Ss OPTIONS
 The following options are available:
 .Pp
@@ -56,7 +56,7 @@ The following options are available:
 In dir1, remove empty dirs and files which are identical to those in dir2
 .Pp
 .Op Fl h|--nosymlinks
-Do not follow symlinks
+Do not follow symbolic links
 .Pp
 .Op Fl s|--silent|--quiet
 Print nothing for differing dirs; return exit status only
